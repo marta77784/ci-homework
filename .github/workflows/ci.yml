@@ -1,0 +1,43 @@
+name: Student CI Pipeline
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Lint
+        run: |
+          echo "Running Lint..."
+          test -s index.html
+
+      - name: Test
+        run: |
+          echo "Running Tests..."
+          grep "DevOps" index.html
+
+      - name: Security Check
+        run: |
+          echo "Running Security Check..."
+          if grep -qi "password" index.html; then
+            echo "Security check failed"
+            exit 1
+          fi
+          echo "Security check passed"
+
+      - name: Build
+        run: |
+          echo "Running Build..."
+          mkdir -p build
+          cp index.html build/index.html
+          test -f build/index.html
+
+      - name: CI Complete
+        run: echo "CI PIPELINE PASSED"
